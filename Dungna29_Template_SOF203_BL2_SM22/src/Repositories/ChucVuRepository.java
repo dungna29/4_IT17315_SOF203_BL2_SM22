@@ -16,23 +16,55 @@ import java.sql.*;
  */
 //Code CRUD đối tượng này với CSDL
 public class ChucVuRepository {  
-  private final String UPDATE_CHUCVU = "UPDATE CHUCVU SET";
-  private final String DELETE_CHUCVU = "DELETE FROM CHUCVU WHERE ID =";
+  /*
+  Dùng để tham khảo.
+  final String INSERT_SQL = "INSERT INTO [dbo].[ChucVu] ([MaChucVu],[TenChucVu])VALUES(?,?)";
+    final String UPDATE_SQL = "UPDATE [dbo].[ChucVu] SET [MaChucVu] = ? WHERE [IdChucVu] = ?";
+    final String DELETE_SQL = "DELETE FROM [dbo].[ChucVu] WHERE [IdChucVu] = ?";
+    final String SELECT_BY_SQL = "SELECT * FROM [dbo].[ChucVu] WHERE [IdChucVu] = ?";
+    final String SELECT_ALL_SQL = "SELECT * FROM [dbo].[ChucVu]";
+  */
+ 
 
   public ChucVuRepository() {
   }
   
-  public String Add(ChucVu obj) {
-    
+  public boolean Add(ChucVu obj) {
     try (Connection conn = DBContext.GetConnection()) {
       Statement st = conn.createStatement();
       String INSERT_CHUCVU = "INSERT INTO CHUCVU(Ma,Ten) VALUES(" +"'"+ obj.getMa() + "','" + obj.getTen() + "')";
       System.out.println(INSERT_CHUCVU);
       st.executeUpdate(INSERT_CHUCVU);
-      return "Thêm thành công";
+      //conn.close();
+      return true;
     } catch (Exception e) {
       System.out.println("Lỗi không thể kết nối vào CSDL tại Add()");
-      return "Thêm thất bại";
+      e.printStackTrace();
+      return false;
+    }
+  }
+  public boolean Update(ChucVu obj) {
+    try (Connection conn = DBContext.GetConnection()) {
+      Statement st = conn.createStatement();
+      String UPDATE_CHUCVU = "UPDATE CHUCVU SET MA = '" +obj.getMa()+"',Ten = '"+obj.getTen()+"' WHERE ID = '"+obj.getId()+"'";
+      st.executeUpdate(UPDATE_CHUCVU);
+      conn.close();
+      return true;
+    } catch (Exception e) {
+      System.out.println("Lỗi không thể kết nối vào CSDL tại Add()");
+      return false;
+    }
+  }
+   public boolean Delete(ChucVu obj) {
+    try (Connection conn = DBContext.GetConnection()) {
+      Statement st = conn.createStatement();
+      String DELETE_CHUCVU = "DELETE FROM CHUCVU WHERE ID = '"+obj.getId()+"'";
+      st.executeUpdate(DELETE_CHUCVU);
+      conn.close();
+      return true;
+    } catch (Exception e) {
+      System.out.println("Lỗi không thể kết nối vào CSDL tại Add()");
+      return false;
     }
   }
 
@@ -53,5 +85,5 @@ public class ChucVuRepository {
     }
     return lstChucVus;
   }
-
+ 
 }

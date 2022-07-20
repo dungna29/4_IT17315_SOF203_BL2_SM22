@@ -5,17 +5,38 @@
  */
 package Views;
 
+import Models.ChucVu;
+import Services.QLNhanVienService;
+import Utilities.Utility;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Dungna89
  */
 public class FrmChucVu extends javax.swing.JFrame {
 
-  /**
-   * Creates new form FrmChucVu
-   */
+ private QLNhanVienService _Service;
+ private DefaultTableModel _DefaultTableModel;
+ //private DefaultComboBoxModel _DefaultComboBoxModel;
   public FrmChucVu() {
     initComponents();
+    _Service = new QLNhanVienService();
+    txt_Ma.setEnabled(false);
+    LoadTable(null);
+  }
+  private ChucVu GetDataFromGui(){
+    return new ChucVu(null,txt_Ma.getText(),txt_Ten.getText());
+  }
+  private void LoadTable(String input){ 
+    _DefaultTableModel = (DefaultTableModel) tbl_ChucVu.getModel();
+    _DefaultTableModel.setRowCount(0);
+    int stt = 1;
+    for (var x : _Service.GetAll(input)) {
+      _DefaultTableModel.addRow(new Object[]{stt++, x.getId(), x.getMa(),x.getTen()});
+    }
   }
 
   /**
@@ -30,6 +51,7 @@ public class FrmChucVu extends javax.swing.JFrame {
     jPanel1 = new javax.swing.JPanel();
     jScrollPane1 = new javax.swing.JScrollPane();
     tbl_ChucVu = new javax.swing.JTable();
+    txt_TimKiem = new javax.swing.JTextField();
     jPanel2 = new javax.swing.JPanel();
     btn_Them = new javax.swing.JButton();
     btn_Sua = new javax.swing.JButton();
@@ -62,25 +84,37 @@ public class FrmChucVu extends javax.swing.JFrame {
     ));
     jScrollPane1.setViewportView(tbl_ChucVu);
 
+    txt_TimKiem.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+    txt_TimKiem.setText("Tìm kiếm...");
+
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
     jPanel1Layout.setHorizontalGroup(
       jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(jPanel1Layout.createSequentialGroup()
         .addContainerGap()
-        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+          .addComponent(txt_TimKiem)
+          .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
         .addContainerGap())
     );
     jPanel1Layout.setVerticalGroup(
       jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-        .addContainerGap(22, Short.MAX_VALUE)
-        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 284, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addContainerGap()
+        .addComponent(txt_TimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addContainerGap())
     );
 
     btn_Them.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
     btn_Them.setText("THÊM");
+    btn_Them.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btn_ThemActionPerformed(evt);
+      }
+    });
     jPanel2.add(btn_Them);
 
     btn_Sua.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
@@ -104,6 +138,16 @@ public class FrmChucVu extends javax.swing.JFrame {
     jLabel3.setText("Tên:");
 
     txt_Ten.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+    txt_Ten.addCaretListener(new javax.swing.event.CaretListener() {
+      public void caretUpdate(javax.swing.event.CaretEvent evt) {
+        txt_TenCaretUpdate(evt);
+      }
+    });
+    txt_Ten.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseExited(java.awt.event.MouseEvent evt) {
+        txt_TenMouseExited(evt);
+      }
+    });
 
     javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
     jPanel3.setLayout(jPanel3Layout);
@@ -139,16 +183,11 @@ public class FrmChucVu extends javax.swing.JFrame {
     layout.setHorizontalGroup(
       layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
       .addGroup(layout.createSequentialGroup()
+        .addContainerGap()
         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-          .addGroup(layout.createSequentialGroup()
-            .addContainerGap()
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-          .addGroup(layout.createSequentialGroup()
-            .addContainerGap()
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-          .addGroup(layout.createSequentialGroup()
-            .addContainerGap()
-            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+          .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+          .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+          .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         .addContainerGap())
       .addGroup(layout.createSequentialGroup()
         .addGap(70, 70, 70)
@@ -162,7 +201,7 @@ public class FrmChucVu extends javax.swing.JFrame {
         .addComponent(jLabel2)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -171,6 +210,26 @@ public class FrmChucVu extends javax.swing.JFrame {
 
     pack();
   }// </editor-fold>//GEN-END:initComponents
+
+  private void txt_TenCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txt_TenCaretUpdate
+   if (txt_Ten.getText().isEmpty()) {
+      txt_Ma.setText("");
+      return;
+    }
+    txt_Ma.setText(Utility.ZenMaTheoTen(txt_Ten.getText()));
+  }//GEN-LAST:event_txt_TenCaretUpdate
+
+  private void txt_TenMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_TenMouseExited
+    if (txt_Ten.getText().isEmpty()) {
+      return;
+    }
+    txt_Ten.setText(Utility.VietHoaFullName(txt_Ten.getText()).trim());
+  }//GEN-LAST:event_txt_TenMouseExited
+
+  private void btn_ThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ThemActionPerformed
+    JOptionPane.showMessageDialog(this, _Service.Add(GetDataFromGui()));
+    LoadTable(null);
+  }//GEN-LAST:event_btn_ThemActionPerformed
 
   /**
    * @param args the command line arguments
@@ -222,5 +281,6 @@ public class FrmChucVu extends javax.swing.JFrame {
   private javax.swing.JTable tbl_ChucVu;
   private javax.swing.JTextField txt_Ma;
   private javax.swing.JTextField txt_Ten;
+  private javax.swing.JTextField txt_TimKiem;
   // End of variables declaration//GEN-END:variables
 }
