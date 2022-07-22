@@ -59,11 +59,11 @@ public class ChucVuRepository {
     try (Connection conn = DBContext.GetConnection()) {
       Statement st = conn.createStatement();
       String DELETE_CHUCVU = "DELETE FROM CHUCVU WHERE ID = '"+obj.getId()+"'";
+       System.out.println(DELETE_CHUCVU);
       st.executeUpdate(DELETE_CHUCVU);
-      conn.close();
       return true;
     } catch (Exception e) {
-      System.out.println("Lỗi không thể kết nối vào CSDL tại Add()");
+      System.out.println("Lỗi không thể kết nối vào CSDL tại Delete()");
       return false;
     }
   }

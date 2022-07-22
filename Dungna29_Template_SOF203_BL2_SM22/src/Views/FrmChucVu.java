@@ -6,7 +6,7 @@
 package Views;
 
 import Models.ChucVu;
-import Services.QLNhanVienService;
+import Services.QLChucVuService;
 import Utilities.Utility;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
@@ -18,24 +18,28 @@ import javax.swing.table.DefaultTableModel;
  */
 public class FrmChucVu extends javax.swing.JFrame {
 
- private QLNhanVienService _Service;
- private DefaultTableModel _DefaultTableModel;
- //private DefaultComboBoxModel _DefaultComboBoxModel;
+  private QLChucVuService _Service;
+  private DefaultTableModel _DefaultTableModel;
+  //private DefaultComboBoxModel _DefaultComboBoxModel;
+  private String _idWhenClick;
+
   public FrmChucVu() {
     initComponents();
-    _Service = new QLNhanVienService();
+    _Service = new QLChucVuService();
     txt_Ma.setEnabled(false);
     LoadTable(null);
   }
-  private ChucVu GetDataFromGui(){
-    return new ChucVu(null,txt_Ma.getText(),txt_Ten.getText());
+
+  private ChucVu GetDataFromGui() {
+    return new ChucVu(null, txt_Ma.getText(), txt_Ten.getText());
   }
-  private void LoadTable(String input){ 
+
+  private void LoadTable(String input) {
     _DefaultTableModel = (DefaultTableModel) tbl_ChucVu.getModel();
     _DefaultTableModel.setRowCount(0);
     int stt = 1;
     for (var x : _Service.GetAll(input)) {
-      _DefaultTableModel.addRow(new Object[]{stt++, x.getId(), x.getMa(),x.getTen()});
+      _DefaultTableModel.addRow(new Object[]{stt++, x.getId(), x.getMa(), x.getTen()});
     }
   }
 
@@ -70,7 +74,7 @@ public class FrmChucVu extends javax.swing.JFrame {
 
     jPanel1.setBackground(new java.awt.Color(255, 204, 204));
 
-    tbl_ChucVu.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
+    tbl_ChucVu.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
     tbl_ChucVu.setModel(new javax.swing.table.DefaultTableModel(
       new Object [][] {
         {null, null, null, null},
@@ -82,10 +86,28 @@ public class FrmChucVu extends javax.swing.JFrame {
         "Title 1", "Title 2", "Title 3", "Title 4"
       }
     ));
+    tbl_ChucVu.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        tbl_ChucVuMouseClicked(evt);
+      }
+    });
     jScrollPane1.setViewportView(tbl_ChucVu);
 
     txt_TimKiem.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
     txt_TimKiem.setText("Tìm kiếm...");
+    txt_TimKiem.addCaretListener(new javax.swing.event.CaretListener() {
+      public void caretUpdate(javax.swing.event.CaretEvent evt) {
+        txt_TimKiemCaretUpdate(evt);
+      }
+    });
+    txt_TimKiem.addMouseListener(new java.awt.event.MouseAdapter() {
+      public void mouseClicked(java.awt.event.MouseEvent evt) {
+        txt_TimKiemMouseClicked(evt);
+      }
+      public void mouseExited(java.awt.event.MouseEvent evt) {
+        txt_TimKiemMouseExited(evt);
+      }
+    });
 
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
     jPanel1.setLayout(jPanel1Layout);
@@ -95,7 +117,7 @@ public class FrmChucVu extends javax.swing.JFrame {
         .addContainerGap()
         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
           .addComponent(txt_TimKiem)
-          .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+          .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE))
         .addContainerGap())
     );
     jPanel1Layout.setVerticalGroup(
@@ -119,10 +141,20 @@ public class FrmChucVu extends javax.swing.JFrame {
 
     btn_Sua.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
     btn_Sua.setText("Sửa");
+    btn_Sua.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btn_SuaActionPerformed(evt);
+      }
+    });
     jPanel2.add(btn_Sua);
 
     btn_Xoa.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
     btn_Xoa.setText("Xóa");
+    btn_Xoa.addActionListener(new java.awt.event.ActionListener() {
+      public void actionPerformed(java.awt.event.ActionEvent evt) {
+        btn_XoaActionPerformed(evt);
+      }
+    });
     jPanel2.add(btn_Xoa);
 
     btn_Clear.setFont(new java.awt.Font("Tahoma", 0, 36)); // NOI18N
@@ -212,7 +244,7 @@ public class FrmChucVu extends javax.swing.JFrame {
   }// </editor-fold>//GEN-END:initComponents
 
   private void txt_TenCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txt_TenCaretUpdate
-   if (txt_Ten.getText().isEmpty()) {
+    if (txt_Ten.getText().isEmpty()) {
       txt_Ma.setText("");
       return;
     }
@@ -230,6 +262,49 @@ public class FrmChucVu extends javax.swing.JFrame {
     JOptionPane.showMessageDialog(this, _Service.Add(GetDataFromGui()));
     LoadTable(null);
   }//GEN-LAST:event_btn_ThemActionPerformed
+
+  private void tbl_ChucVuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbl_ChucVuMouseClicked
+    int rowIndex = tbl_ChucVu.getSelectedRow();
+    if (rowIndex == -1) return;
+    _idWhenClick = tbl_ChucVu.getModel().getValueAt(rowIndex, 1).toString();
+    System.out.println(_idWhenClick);
+    var temp = _Service.GetChucVuByID(_idWhenClick);
+    txt_Ma.setText(temp.getMa());
+    txt_Ten.setText(temp.getTen());
+  }//GEN-LAST:event_tbl_ChucVuMouseClicked
+
+  private void btn_XoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_XoaActionPerformed
+    var temp = new ChucVu();
+    temp.setId(_idWhenClick);
+    JOptionPane.showMessageDialog(this, _Service.Delete(temp));
+    LoadTable(null);
+    _idWhenClick = "";
+  }//GEN-LAST:event_btn_XoaActionPerformed
+
+  private void btn_SuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_SuaActionPerformed
+    var temp = GetDataFromGui();
+    temp.setId(_idWhenClick);
+    JOptionPane.showMessageDialog(this, _Service.Update(temp));
+    LoadTable(null);
+    //_idWhenClick = "";
+  }//GEN-LAST:event_btn_SuaActionPerformed
+
+  private void txt_TimKiemCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txt_TimKiemCaretUpdate
+    if (txt_TimKiem.getText().isEmpty()) {
+      LoadTable(null);
+      return;
+    }
+    LoadTable(txt_TimKiem.getText());
+  }//GEN-LAST:event_txt_TimKiemCaretUpdate
+
+  private void txt_TimKiemMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_TimKiemMouseExited
+    txt_TimKiem.setText("Tìm kiếm......");
+    LoadTable(null);
+  }//GEN-LAST:event_txt_TimKiemMouseExited
+
+  private void txt_TimKiemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txt_TimKiemMouseClicked
+    txt_TimKiem.setText("");
+  }//GEN-LAST:event_txt_TimKiemMouseClicked
 
   /**
    * @param args the command line arguments

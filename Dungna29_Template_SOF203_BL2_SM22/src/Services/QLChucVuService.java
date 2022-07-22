@@ -14,12 +14,12 @@ import java.util.List;
  *
  * @author Dungna89
  */
-public class QLNhanVienService {
+public class QLChucVuService {
 
   private List<ChucVu> _lstChucVus;
   private ChucVuRepository _ChucVuRepository;
 
-  public QLNhanVienService() {
+  public QLChucVuService() {
     _lstChucVus = new ArrayList<>();
     _ChucVuRepository = new ChucVuRepository();
     //Khi mà form load thì sẽ load data từ DB
@@ -75,6 +75,16 @@ public class QLNhanVienService {
     }
     return "Sửa thêm được";
   }
+  //Phương thức trả về đối tượng theo ID
+  public ChucVu GetChucVuByID(String id){
+    for (ChucVu x : _lstChucVus) {
+      if (x.getId().equals(id)) {
+        return x;
+      }
+    }
+    return null;
+  }
+  
   //Các chức năng mà giao diện cần
 
 }
