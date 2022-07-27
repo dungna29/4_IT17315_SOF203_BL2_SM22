@@ -42,7 +42,7 @@ public class S2_DbConnection {
     st.close();//Đóng kết nối khi không cần sử dụng
     conn.close();
     System.out.println("");
-      System.out.println("");
+      System.out.println("Oki");
   }
     
   
