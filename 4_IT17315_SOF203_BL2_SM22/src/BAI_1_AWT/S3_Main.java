@@ -12,6 +12,7 @@ package BAI_1_AWT;
 public class S3_Main {
   public static void main(String[] args) {
     new S3_JFrame();
+      System.out.println("");
   }
    /*
         Có 2 kiểu Container trong Swing đó là Top-Level Container và Multi-Purpose Container

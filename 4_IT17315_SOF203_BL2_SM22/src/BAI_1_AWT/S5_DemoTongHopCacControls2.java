@@ -21,6 +21,7 @@ public class S5_DemoTongHopCacControls2 extends javax.swing.JFrame {
   DefaultListModel defaultListModel;
   public S5_DemoTongHopCacControls2() {
     initComponents();
+    
     defaultListModel = new DefaultListModel();
     String[] arrNames ={"ABC","XYZ"};
     for (String x : arrNames) {
