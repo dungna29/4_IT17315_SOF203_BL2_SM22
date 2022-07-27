@@ -43,6 +43,7 @@ public class S2_DbConnection {
     conn.close();
     System.out.println("");
       System.out.println("Oki");
+      System.out.println("2022");
   }
     
   
