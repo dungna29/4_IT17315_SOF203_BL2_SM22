@@ -46,5 +46,5 @@ public class S2_DbConnection {
       System.out.println("2022");
   }
     
-  
+ 
 }
